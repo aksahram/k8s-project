@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: oggy-web
+  namespace:oggy
+  labels:
+    app: oggy-web
+
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: oggy-web
+  template:
+    metadata:
+      labels:
+        app: oggy-web
+    spec:
+      containers:
+      - name: oggy-container
+        image: oggy-web: v2
+        imagePullPolicy: Never
+        volumeMounts:
+         - name: db-connection
+          mountPath: /connection
+        - name: db-password
+          mountPath: /password
+       ports:
+       - containerPort: 80
+     volumes:
+       - name: db-connection
+         configMap:
+           name:oggy-cm
+
+       - name: db-password
+         secret:
+           secretName: database-secret
